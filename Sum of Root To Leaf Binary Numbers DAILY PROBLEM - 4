@@ -1,0 +1,178 @@
+You are given the root of a binary tree where each node has a value 0 or 1. Each root-to-leaf path represents a binary number starting with the most significant bit.
+
+For example, if the path is 0 -> 1 -> 1 -> 0 -> 1, then this could represent 01101 in binary, which is 13.
+For all leaves in the tree, consider the numbers represented by the path from the root to that leaf. Return the sum of these numbers.
+
+The test cases are generated so that the answer fits in a 32-bits integer.
+
+ 
+
+Example 1:
+
+
+Input: root = [1,0,1,0,1,0,1]
+Output: 22
+Explanation: (100) + (101) + (110) + (111) = 4 + 5 + 6 + 7 = 22
+Example 2:
+
+Input: root = [0]
+Output: 0
+ 
+
+Constraints:
+
+The number of nodes in the tree is in the range [1, 1000].
+Node.val is 0 or 1.
+
+ANSWER:
+class Solution:
+    def dfs(self, node, currentNumber):
+        if not node:
+            return 0
+        
+        currentNumber = currentNumber * 2 + node.val
+        
+        if not node.left and not node.right:
+            return currentNumber
+        
+        leftSum = self.dfs(node.left, currentNumber)
+        rightSum = self.dfs(node.right, currentNumber)
+        
+        return leftSum + rightSum
+    
+    def sumRootToLeaf(self, root):
+        return self.dfs(root, 0)
+
+APPROACH:
+Every root-to-leaf path in the tree forms a number.
+
+Since each node contains only 0 or 1, the path naturally represents a binary number.
+
+For example:
+
+Path: 1 → 0 → 1
+This forms binary number 101
+Binary 101 = 5 in decimal
+
+So the goal of the problem is simple:
+
+👉 For every root-to-leaf path,
+build the binary number represented by that path,
+convert it to decimal,
+and add all such numbers.
+
+Instead of storing the entire path and converting later,
+we can build the number while traversing the tree.
+
+How We Build the Number While Traversing
+While moving from parent to child:
+
+We maintain a variable called currentNumber.
+
+At each node:
+
+We update the number using the node’s value.
+Then continue to its children.
+The update step is:
+
+currentNumber = currentNumber * 2 + node->val
+
+Now let’s understand clearly why this works.
+
+Why Multiplying by 2 Works
+Binary is a base-2 number system.
+
+In decimal (base 10):
+If we have number 23 and want to add digit 4 at the end:
+
+23 * 10 + 4 = 234
+
+Why multiply by 10?
+Because shifting digits left in base 10 means multiplying by 10.
+
+Similarly, in binary (base 2):
+
+Shifting bits left means multiplying by 2.
+
+Example:
+
+Suppose current binary number is:
+
+101 (which is 5 in decimal)
+
+If we move one level deeper in the tree,
+we are adding a new bit to the right.
+
+Step 1: Shift left
+5 * 2 = 10
+Binary becomes 1010
+
+Step 2: Add new bit (say it is 1)
+10 + 1 = 11
+Binary becomes 1011
+
+So:
+
+Old number = 101
+After multiplying by 2 → 1010
+After adding new bit → 1011
+
+That is exactly what this line does:
+
+currentNumber = currentNumber * 2 + node->val
+
+We shift previous bits left,
+then attach the current bit at the end.
+
+Step-by-Step Tree Example
+Consider:
+
+    1
+   / \
+  0   1
+ / \
+0   1
+Let’s follow path: 1 → 0 → 1
+
+Start:
+currentNumber = 0
+
+At node 1:
+0 * 2 + 1 = 1
+
+At node 0:
+1 * 2 + 0 = 2
+(Binary: 10)
+
+At node 1:
+2 * 2 + 1 = 5
+(Binary: 101)
+
+So this path contributes 5.
+
+We do this for every root-to-leaf path
+and sum all returned values.
+
+Approach
+Use DFS traversal.
+Pass currentNumber in recursion.
+At each node:
+currentNumber = currentNumber * 2 + node->val
+If node is a leaf:
+return currentNumber.
+Otherwise:
+return dfs(left) + dfs(right).
+This ensures:
+
+Each path builds its own number.
+Each leaf returns its decimal value.
+Final answer is the sum of all paths.
+Complexity
+Time Complexity: O(n)
+We visit each node exactly once.
+
+Space Complexity: O(h)
+Where h is the height of the tree.
+
+Worst case (skewed tree): O(n)
+Balanced tree: O(log n)
