@@ -1,0 +1,146 @@
+You are given an integer array arr. Sort the integers in the array in ascending order by the number of 1's in their binary representation and in case of two or more integers have the same number of 1's you have to sort them in ascending order.
+
+Return the array after sorting it.
+
+ 
+
+Example 1:
+
+Input: arr = [0,1,2,3,4,5,6,7,8]
+Output: [0,1,2,4,8,3,5,6,7]
+Explantion: [0] is the only integer with 0 bits.
+[1,2,4,8] all have 1 bit.
+[3,5,6] have 2 bits.
+[7] has 3 bits.
+The sorted array by bits is [0,1,2,4,8,3,5,6,7]
+Example 2:
+
+Input: arr = [1024,512,256,128,64,32,16,8,4,2,1]
+Output: [1,2,4,8,16,32,64,128,256,512,1024]
+Explantion: All integers have 1 bit in the binary representation, you should just sort them in ascending order.
+ 
+
+Constraints:
+
+1 <= arr.length <= 500
+0 <= arr[i] <= 104
+
+ANSWER :
+class Solution:
+    def sortByBits(self, arr):
+        
+        # Step 1: Sort array using custom key
+        # Key is a tuple:
+        # (number of 1's in binary, actual number)
+        
+        arr.sort(key=lambda x: (bin(x).count('1'), x))
+        
+        # Step 2: Return sorted array
+        return arr
+APPROACH :
+🎯 Why This Works?
+
+For each number:
+
+bin(x).count('1')
+
+creates something like:
+
+0  -> (0, 0)
+1  -> (1, 1)
+2  -> (1, 2)
+3  -> (2, 3)
+
+Python sorts tuples automatically.
+
+So final correct output comes.
+
+⏱ Time Complexity
+
+Counting bits → O(log n)
+
+Sorting → O(n log n)
+
+Overall:
+
+O(n log n)
+
+Very efficient ✅
+
+STEP BY STEP :
+📌 Step 1: Group by 1’s count
+
+0 bits → [0]
+
+1 bit → [1,2,4,8]
+
+2 bits → [3,5,6]
+
+3 bits → [7]
+
+📌 Step 2: Sort inside group (ascending)
+
+Already sorted.
+
+📌 Final Answer
+[0,1,2,4,8,3,5,6,7]
+🔎 Example 2
+
+Input:
+
+[1024,512,256,128,64,32,16,8,4,2,1]
+
+All numbers have only 1 bit in binary.
+
+Example:
+
+1024 → 10000000000 → 1 bit
+
+512 → 1000000000 → 1 bit
+
+1 → 1 → 1 bit
+
+Since all have same bit count,
+just sort normally ascending.
+
+Final:
+
+[1,2,4,8,16,32,64,128,256,512,1024]
+🧮 Mathematical Idea (Important 🔥)
+
+Binary means base 2.
+
+Example:
+
+6 = 110 (binary)
+= 1×2² + 1×2¹ + 0×2⁰
+= 4 + 2
+
+Number of 1’s = 2
+
+We are sorting by:
+
+(number_of_1s, number)
+
+Python can sort tuples automatically.
+
+Example:
+
+(1,2)
+(1,4)
+(2,3)
+
+It first checks first value.
+If equal → checks second value.
+
+That is EXACTLY what we need.
+
+🧑‍💻 Easy Python Logic
+Step 1:
+
+Count number of 1’s using:
+
+bin(num).count('1')
+Step 2:
+
+Sort using key function.
